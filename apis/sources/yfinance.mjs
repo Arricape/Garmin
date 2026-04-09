@@ -9,10 +9,12 @@ const BASE = 'https://query1.finance.yahoo.com/v8/finance/chart';
 // Symbols to track — covers broad market, rates, commodities, crypto, volatility
 const SYMBOLS = {
   // Indexes / ETFs
-  '^GSPC': 'S&P 500',
-  '^IXIC': 'Nasdaq Composite',
-  '^DJI': 'Dow Jones',
-  '^RUT': 'Russell 2000',
+   // SPDR MSCI World
+  'SPDW' : 'SPDR MSCI World',
+  // Amundi MSCI EM
+  'AEEM.DE': 'Amundi MSCI Emerging Markets',
+  'AM39.VI': 'Amundi EMERG MARKETS UCITS ETF',
+
   // Rates / Credit
   TLT: '20Y+ Treasury',
   HYG: 'High Yield Corp',
@@ -24,10 +26,12 @@ const SYMBOLS = {
   'BZ=F': 'Brent Crude',
   'NG=F': 'Natural Gas',
   // Crypto
-  'BTC-USD': 'Bitcoin',
-  'ETH-USD': 'Ethereum',
+  'BTC-EUR': 'Bitcoin',
+  'ETH-EUR': 'Ethereum',
+  'XMR-EUR': 'Monero EUR',
+  'XMR-BTC': 'Monero BTC',
   // Volatility
-  '^VIX': 'VIX',
+  '^VIX': 'Volatillity Index',
 };
 
 async function fetchQuote(symbol) {
@@ -72,7 +76,7 @@ async function fetchQuote(symbol) {
       prevClose: Math.round((prevClose || 0) * 100) / 100,
       change: Math.round(change * 100) / 100,
       changePct: Math.round(changePct * 100) / 100,
-      currency: meta.currency || 'USD',
+      currency: meta.currency || 'EUR',
       exchange: meta.exchangeName || '',
       marketState: meta.marketState || 'UNKNOWN',
       history,
@@ -117,10 +121,10 @@ export async function collect() {
       failed,
       timestamp: new Date().toISOString(),
     },
-    indexes: pickGroup(quotes, ['^GSPC', '^IXIC', '^DJI', '^RUT']),
+    indexes: pickGroup(quotes, ['SPDW','AEEM.DE','AM39.VI']),
     rates: pickGroup(quotes, ['TLT', 'HYG', 'LQD']),
     commodities: pickGroup(quotes, ['GC=F', 'SI=F', 'CL=F', 'BZ=F', 'NG=F']),
-    crypto: pickGroup(quotes, ['BTC-USD', 'ETH-USD']),
+    crypto: pickGroup(quotes, ['BTC-EUR', 'ETH-EUR', 'XMR-EUR', 'XMR-BTC']),
     volatility: pickGroup(quotes, ['^VIX']),
   };
 }
